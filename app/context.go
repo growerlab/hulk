@@ -16,16 +16,16 @@ type PushContext struct {
 	RepoDir string
 }
 
-func (r *PushContext) IsZeroOldCommit() bool {
-	return r.After == repo.ZeroRef
+func (r *PushContext) IsNullOldCommit() bool {
+	return r.After == repo.NullRef
 }
 
 func (r *PushContext) IsNewBranch() bool {
-	return repo.IsBranch(r.Ref) && r.IsZeroOldCommit()
+	return repo.IsBranch(r.Ref) && r.IsNullOldCommit()
 }
 
 func (r *PushContext) IsNewTag() bool {
-	return repo.IsTag(r.Ref) && r.IsZeroOldCommit()
+	return repo.IsTag(r.Ref) && r.IsNullOldCommit()
 }
 
 func Context() *PushContext {
