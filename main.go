@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -8,7 +9,7 @@ import (
 )
 
 func main() {
-	l := app.NewLogger()
+	l := app.NewLogger(fmt.Sprintf("%s/%s", app.RepoOwner, app.RepoPath))
 	log.SetOutput(l)
 
 	defer func() {
