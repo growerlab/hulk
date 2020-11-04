@@ -23,7 +23,7 @@ const (
 	RefTypeTag    RefType = "tag"
 )
 
-type PushContext struct {
+type PushSession struct {
 	After  string // old
 	Before string // new
 	Ref    string // branch, tag
@@ -37,27 +37,27 @@ type PushContext struct {
 	RefType RefType
 }
 
-func (r *PushContext) IsNullOldCommit() bool {
+func (r *PushSession) IsNullOldCommit() bool {
 	return r.After == repo.NullRef
 }
 
-func (r *PushContext) IsNullNewCommit() bool {
+func (r *PushSession) IsNullNewCommit() bool {
 	return r.Before == repo.NullRef
 }
 
-func (r *PushContext) IsNewBranch() bool {
+func (r *PushSession) IsNewBranch() bool {
 	return repo.IsBranch(r.Ref) && r.IsNullOldCommit() && !r.IsNullNewCommit()
 }
 
-func (r *PushContext) IsNewTag() bool {
+func (r *PushSession) IsNewTag() bool {
 	return repo.IsTag(r.Ref) && r.IsNullOldCommit() && !r.IsNullNewCommit()
 }
 
-func (r *PushContext) IsCommitPush() bool {
+func (r *PushSession) IsCommitPush() bool {
 	return !r.IsNullOldCommit() && !r.IsNullNewCommit()
 }
 
-func (r *PushContext) prepare() error {
+func (r *PushSession) prepare() error {
 	r.RepoOwner = RepoOwner
 	r.RepoPath = RepoPath
 
@@ -85,13 +85,13 @@ func (r *PushContext) prepare() error {
 	return nil
 }
 
-func Context() *PushContext {
+func Context() *PushSession {
 	pwd, err := os.Getwd()
 	if err != nil {
 		ErrPanic(err)
 	}
 
-	ctx := &PushContext{
+	ctx := &PushSession{
 		RepoDir: pwd,
 	}
 	_, err = fmt.Scan(&ctx.After)
