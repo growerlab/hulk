@@ -24,17 +24,20 @@ const (
 )
 
 type PushSession struct {
-	After  string // old
-	Before string // new
-	Ref    string // branch, tag
+	After  string `json:"after"`  // old
+	Before string `json:"before"` // new
+	Ref    string `json:"ref"`    // branch, tag
 
-	RepoDir string
+	RepoDir string `json:"repo_dir"`
 
-	RepoOwner string // namespace.path
-	RepoPath  string // repository name
+	RepoOwner string `json:"repo_owner"` // namespace.path
+	RepoPath  string `json:"repo_path"`  // repository name
 
-	Action  Action
-	RefType RefType
+	Action  Action  `json:"action"`
+	RefType RefType `json:"ref_type"`
+
+	ProtType string `json:"prot_type"` // http/ssh
+	Operator string `json:"operator"`  // 推送者
 }
 
 func (r *PushSession) IsNullOldCommit() bool {

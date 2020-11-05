@@ -8,8 +8,6 @@ var (
 )
 
 func init() {
-	app = &App{
-		hooks: map[string]Hook{},
-	}
+	app = &App{}
 	app.RegisterHook(&HookEvent{})
 }
