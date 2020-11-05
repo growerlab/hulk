@@ -34,8 +34,10 @@ GIT_QUARANTINE_PATH=/Users/moli/go-project/src/github.com/growerlab/mensa/test/r
    
 ##### 环境变量 
 
+```shell
 GROWERLAB_REPO_OWNER      // 仓库所有者     
 GROWERLAB_REPO_NAME       // 仓库名称
 GROWERLAB_REPO_ACTION     // pull/push
 GROWERLAB_REPO_PROT_TYPE  // ssh/http
 GROWERLAB_REPO_OPERATOR   // 操作者
+```
