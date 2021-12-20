@@ -4,19 +4,26 @@ import (
 	"encoding/json"
 	"os"
 
-	"github.com/growerlab/mensa/hulk/repo"
+	"github.com/asaskevich/govalidator"
+	"github.com/go-git/go-git/v5/plumbing"
+	"github.com/growerlab/mensa/hulk/app/repo"
 	"github.com/pkg/errors"
 )
 
 type Action string
+type ActionType string
+type RefType string
 
 const (
-	ActionCreated Action = "created" // create branch or tag
-	ActionRemoved Action = "removed" // remove branch or tag
-	ActionPushed  Action = "pushed"  // push commit
+	ActionCreate Action = "create" // create branch or tag
+	ActionDelete Action = "delete" // delete branch or tag
+	ActionPush   Action = "push"   // push commit
 )
 
-type RefType string
+const (
+	ActionTypeUnannotated = "unannotated" // 没有描述的tag
+	ActionTypeAnnotated   = "annotated"   // 有描述的tag
+)
 
 const (
 	RefTypeBranch RefType = "branch"
@@ -33,12 +40,13 @@ type PushSession struct {
 	RepoOwner string `json:"repo_owner"` // namespace.path
 	RepoPath  string `json:"repo_path"`  // repository name
 
-	Action  Action  `json:"action"`
-	RefType RefType `json:"ref_type"`
+	Action     Action  `json:"action"`
+	ActionType string  `json:"action_type"` // 当tag提交到服务器时有/无描述的特征
+	RefType    RefType `json:"ref_type"`
 
 	ProtType string `json:"prot_type"` // http/ssh
 
-	Operator string `json:"operator"` // 推送者
+	Opeator string `json:"operator"` // 推送者
 }
 
 func (r *PushSession) JSON() string {
@@ -65,35 +73,71 @@ func (r *PushSession) IsNewTag() bool {
 	return repo.IsTag(r.RefName) && r.IsNullOldCommit() && !r.IsNullNewCommit()
 }
 
+func (r *PushSession) IsDeleteAction() bool {
+	return r.IsNullNewCommit()
+}
+
 func (r *PushSession) IsCommitPush() bool {
 	return !r.IsNullOldCommit() && !r.IsNullNewCommit()
 }
 
+func (r *PushSession) RevType(rev string) string {
+	if rev == repo.ZeroRef {
+		return ""
+	}
+	t := repo.NewRepository(r.RepoDir).HashType(plumbing.NewHash(rev))
+	switch t {
+	case plumbing.TagObject:
+		return "tag"
+	case plumbing.CommitObject:
+		return "commit"
+	}
+	return ""
+}
+
 func (r *PushSession) prepare() error {
+	if govalidator.IsNull(RepoOwner) ||
+		govalidator.IsNull(RepoPath) {
+		return errors.New("repo owner or path is empty")
+	}
+	if govalidator.IsNull(r.RefName) {
+		return errors.New("ref name is empty")
+	}
+	if govalidator.IsNull(r.OldRev) {
+		return errors.New("old rev is empty")
+	}
+	if govalidator.IsNull(r.NewRev) {
+		return errors.New("new rev is empty")
+	}
+
 	r.RepoOwner = RepoOwner
 	r.RepoPath = RepoPath
 
-	if r.IsCommitPush() {
-		r.RefType = RefTypeBranch
-		r.Action = ActionPushed
-	} else {
-		if repo.IsBranch(r.RefName) {
-			r.RefType = RefTypeBranch
-			if r.IsNewBranch() {
-				r.Action = ActionCreated
-			} else {
-				r.Action = ActionRemoved
-			}
-		} else if repo.IsTag(r.RefName) {
-			r.RefType = RefTypeTag
-			if r.IsNewTag() {
-				r.Action = ActionCreated
-			} else {
-				r.Action = ActionRemoved
-			}
+	if repo.IsTag(r.RefName) {
+		r.RefType = RefTypeTag
+		r.Action = ActionCreate
+		if r.IsDeleteAction() {
+			r.Action = ActionDelete
 		} else {
-			return errors.Errorf("invalid ref '%s'", r.RefName)
+			r.ActionType = ActionTypeAnnotated
+			if r.RevType(r.NewRev) == "commit" {
+				r.ActionType = ActionTypeUnannotated
+			}
 		}
+	} else if repo.IsBranch(r.RefName) {
+		r.RefType = RefTypeBranch
+		if r.IsDeleteAction() {
+			r.Action = ActionDelete
+		} else {
+			if r.RevType(r.NewRev) == "commit" {
+				r.Action = ActionCreate
+			}
+		}
+	} else if r.IsCommitPush() {
+		r.RefType = RefTypeBranch
+		r.Action = ActionPush
+	} else {
+		return errors.Errorf("invalid ref '%s'", r.RefName)
 	}
 	return nil
 }
@@ -104,19 +148,20 @@ func Session() *PushSession {
 		ErrPanic(err)
 	}
 
-	ctx := &PushSession{
+	sess := &PushSession{
 		RepoDir: pwd,
 		RefName: os.Args[1],
 		OldRev:  os.Args[2],
 		NewRev:  os.Args[3],
 	}
 
-	if err := ctx.prepare(); err != nil {
+	if err := sess.prepare(); err != nil {
 		ErrPanic(err)
 	}
-	return ctx
+	return sess
 }
 
+// ErrPanic non-zero exit code
 func ErrPanic(err error) {
 	if err != nil {
 		panic(errors.WithStack(err))

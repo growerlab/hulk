@@ -64,30 +64,40 @@ update hook 会接受 3 个参数
 
 ###### 普通 commit
 
-old commit: 7b10d02abbffea5de7bc00ac1f9d6d602e5dfe18
-new commit: b26e38a1f1439628d8d4f7ed06b2fc233239a0bb
+第一次commit提交
+```
 ref: refs/heads/master
+new commit: 7032e1c57ddcc19d53acd64cd0aa1c3942099a0e
+old commit: 0000000000000000000000000000000000000000
+```
+
+普通commit提交
+```
+ref: refs/heads/master
+new commit: b26e38a1f1439628d8d4f7ed06b2fc233239a0bb
+old commit: 7b10d02abbffea5de7bc00ac1f9d6d602e5dfe18
+```
 
 ###### 新增分支
 
-old commit: 0000000000000000000000000000000000000000
-new commit: b26e38a1f1439628d8d4f7ed06b2fc233239a0bb
 ref: refs/heads/master2
+new commit: b26e38a1f1439628d8d4f7ed06b2fc233239a0bb
+old commit: 0000000000000000000000000000000000000000
 
 ###### 删除分支
 
-old commit: b26e38a1f1439628d8d4f7ed06b2fc233239a0bb
-new commit: 0000000000000000000000000000000000000000
 ref: refs/heads/master2
+new commit: 0000000000000000000000000000000000000000
+old commit: b26e38a1f1439628d8d4f7ed06b2fc233239a0bb
 
 ###### 新增 tag
 
-old commit: 0000000000000000000000000000000000000000
-new commit: 8aa1cfdb6e50c43c54576f36e6bbccfb6ed9644d
 ref: refs/tags/v1.0
+new commit: 8aa1cfdb6e50c43c54576f36e6bbccfb6ed9644d
+old commit: 0000000000000000000000000000000000000000
 
 ###### 删除 tag
 
-old commit: b2af857c460d3fec04940a973646c4a01024f202
-new commit: 0000000000000000000000000000000000000000
 ref: refs/tags/v1.0
+new commit: 0000000000000000000000000000000000000000
+old commit: b2af857c460d3fec04940a973646c4a01024f202

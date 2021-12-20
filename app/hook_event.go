@@ -3,7 +3,7 @@ package app
 import (
 	"math"
 
-	"github.com/growerlab/mensa/hulk/repo"
+	"github.com/growerlab/mensa/hulk/app/repo"
 	"github.com/pkg/errors"
 )
 

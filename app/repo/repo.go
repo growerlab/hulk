@@ -30,7 +30,23 @@ func NewRepository(repoPath string) *Repository {
 	}
 }
 
-//
+func (r *Repository) HashType(hash plumbing.Hash) plumbing.ObjectType {
+	if _, err := r.repo.CommitObject(hash); err == nil {
+		return plumbing.CommitObject
+	}
+	if _, err := r.repo.TagObject(hash); err == nil {
+		return plumbing.TagObject
+	}
+	if _, err := r.repo.BlobObject(hash); err == nil {
+		return plumbing.BlobObject
+	}
+	if _, err := r.repo.TreeObject(hash); err == nil {
+		return plumbing.TreeObject
+	}
+	return plumbing.InvalidObject
+}
+
+// BetweenCommits
 // maxLimit = 0 then no limit
 func (r *Repository) BetweenCommits(before, after string, maxLimit uint) ([]*object.Commit, error) {
 	beforeHash := plumbing.NewHash(before)

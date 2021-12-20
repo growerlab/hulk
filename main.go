@@ -20,9 +20,8 @@ func main() {
 		}
 	}()
 
-	ctx := app.Session()
-	if err := app.Run(ctx); err != nil {
-		log.Println(err)
-		os.Exit(1)
+	sess := app.Session()
+	if err := app.Run(sess); err != nil {
+		app.ErrPanic(err)
 	}
 }
