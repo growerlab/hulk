@@ -53,7 +53,7 @@ func (h *HookEvent) Process(dispatcher EventDispatcher, sess *PushSession) error
 }
 
 func (h *HookEvent) buildCommitEvent(repository *repo.Repository, sess *PushSession) (*PushEvent, error) {
-	commits, err := repository.BetweenCommits(sess.Before, sess.After, MaxCommitLimit)
+	commits, err := repository.BetweenCommits(sess.NewRev, sess.OldRev, MaxCommitLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -73,12 +73,12 @@ func (h *HookEvent) buildCommitEvent(repository *repo.Repository, sess *PushSess
 }
 
 func (h *HookEvent) buildNewBranchEvent(repository *repo.Repository, sess *PushSession) (*PushEvent, error) {
-	_, err := repository.BranchByRef(sess.Ref)
+	_, err := repository.BranchByRef(sess.RefName)
 	if err != nil {
 		return nil, err
 	}
 
-	commits, err := repository.BetweenCommits(sess.Before, sess.After, MaxCommitLimit)
+	commits, err := repository.BetweenCommits(sess.NewRev, sess.OldRev, MaxCommitLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -98,12 +98,12 @@ func (h *HookEvent) buildNewBranchEvent(repository *repo.Repository, sess *PushS
 }
 
 func (h *HookEvent) buildNewTagEvent(repository *repo.Repository, sess *PushSession) (*PushEvent, error) {
-	tag, err := repository.TagByHash(sess.Before)
+	tag, err := repository.TagByHash(sess.NewRev)
 	if err != nil {
 		return nil, err
 	}
 
-	commits, err := repository.BetweenCommits(sess.Before, sess.After, MaxCommitLimit)
+	commits, err := repository.BetweenCommits(sess.NewRev, sess.OldRev, MaxCommitLimit)
 	if err != nil {
 		return nil, err
 	}

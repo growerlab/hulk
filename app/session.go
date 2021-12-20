@@ -24,9 +24,9 @@ const (
 )
 
 type PushSession struct {
-	After  string `json:"after"`  // old
-	Before string `json:"before"` // new
-	Ref    string `json:"ref"`    // branch, tag name
+	RefName string `json:"refname"` // branch, tag name
+	OldRev  string `json:"oldrev"`  // old
+	NewRev  string `json:"newrev"`  // new
 
 	RepoDir string `json:"repo_dir"`
 
@@ -50,19 +50,19 @@ func (r *PushSession) JSON() string {
 }
 
 func (r *PushSession) IsNullOldCommit() bool {
-	return r.After == repo.ZeroRef
+	return r.OldRev == repo.ZeroRef
 }
 
 func (r *PushSession) IsNullNewCommit() bool {
-	return r.Before == repo.ZeroRef
+	return r.NewRev == repo.ZeroRef
 }
 
 func (r *PushSession) IsNewBranch() bool {
-	return repo.IsBranch(r.Ref) && r.IsNullOldCommit() && !r.IsNullNewCommit()
+	return repo.IsBranch(r.RefName) && r.IsNullOldCommit() && !r.IsNullNewCommit()
 }
 
 func (r *PushSession) IsNewTag() bool {
-	return repo.IsTag(r.Ref) && r.IsNullOldCommit() && !r.IsNullNewCommit()
+	return repo.IsTag(r.RefName) && r.IsNullOldCommit() && !r.IsNullNewCommit()
 }
 
 func (r *PushSession) IsCommitPush() bool {
@@ -77,14 +77,14 @@ func (r *PushSession) prepare() error {
 		r.RefType = RefTypeBranch
 		r.Action = ActionPushed
 	} else {
-		if repo.IsBranch(r.Ref) {
+		if repo.IsBranch(r.RefName) {
 			r.RefType = RefTypeBranch
 			if r.IsNewBranch() {
 				r.Action = ActionCreated
 			} else {
 				r.Action = ActionRemoved
 			}
-		} else if repo.IsTag(r.Ref) {
+		} else if repo.IsTag(r.RefName) {
 			r.RefType = RefTypeTag
 			if r.IsNewTag() {
 				r.Action = ActionCreated
@@ -92,7 +92,7 @@ func (r *PushSession) prepare() error {
 				r.Action = ActionRemoved
 			}
 		} else {
-			return errors.Errorf("invalid ref '%s'", r.Ref)
+			return errors.Errorf("invalid ref '%s'", r.RefName)
 		}
 	}
 	return nil
@@ -106,9 +106,9 @@ func Session() *PushSession {
 
 	ctx := &PushSession{
 		RepoDir: pwd,
-		After:   os.Args[1],
-		Before:  os.Args[2],
-		Ref:     os.Args[3],
+		RefName: os.Args[1],
+		OldRev:  os.Args[2],
+		NewRev:  os.Args[3],
 	}
 
 	if err := ctx.prepare(); err != nil {
