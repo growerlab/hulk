@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	l := app.NewLogger(fmt.Sprintf("%s/%s", app.RepoOwner, app.RepoPath))
+	l := app.NewLogger(fmt.Sprintf("%s/%s", app.EnvRepoOwner, app.EnvRepoPath))
 	log.SetOutput(l)
 
 	defer func() {

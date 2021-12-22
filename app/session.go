@@ -17,7 +17,7 @@ type RefType string
 const (
 	ActionCreate Action = "create" // create branch or tag
 	ActionDelete Action = "delete" // delete branch or tag
-	ActionPush   Action = "push"   // push commit
+	ActionCommit Action = "commit" // push commit
 )
 
 const (
@@ -96,10 +96,6 @@ func (r *PushSession) RevType(rev string) string {
 }
 
 func (r *PushSession) prepare() error {
-	if govalidator.IsNull(RepoOwner) ||
-		govalidator.IsNull(RepoPath) {
-		return errors.New("repo owner or path is empty")
-	}
 	if govalidator.IsNull(r.RefName) {
 		return errors.New("ref name is empty")
 	}
@@ -110,8 +106,8 @@ func (r *PushSession) prepare() error {
 		return errors.New("new rev is empty")
 	}
 
-	r.RepoOwner = RepoOwner
-	r.RepoPath = RepoPath
+	r.RepoOwner = EnvRepoOwner
+	r.RepoPath = EnvRepoPath
 
 	if repo.IsTag(r.RefName) {
 		r.RefType = RefTypeTag
@@ -135,7 +131,7 @@ func (r *PushSession) prepare() error {
 		}
 	} else if r.IsCommitPush() {
 		r.RefType = RefTypeBranch
-		r.Action = ActionPush
+		r.Action = ActionCommit
 	} else {
 		return errors.Errorf("invalid ref '%s'", r.RefName)
 	}

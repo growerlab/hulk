@@ -80,24 +80,32 @@ old commit: 7b10d02abbffea5de7bc00ac1f9d6d602e5dfe18
 
 ###### 新增分支
 
+```
 ref: refs/heads/master2
 new commit: b26e38a1f1439628d8d4f7ed06b2fc233239a0bb
 old commit: 0000000000000000000000000000000000000000
+```
 
 ###### 删除分支
 
+```
 ref: refs/heads/master2
 new commit: 0000000000000000000000000000000000000000
 old commit: b26e38a1f1439628d8d4f7ed06b2fc233239a0bb
+```
 
 ###### 新增 tag
 
+```
 ref: refs/tags/v1.0
 new commit: 8aa1cfdb6e50c43c54576f36e6bbccfb6ed9644d
 old commit: 0000000000000000000000000000000000000000
+```
 
 ###### 删除 tag
 
+```
 ref: refs/tags/v1.0
 new commit: 0000000000000000000000000000000000000000
 old commit: b2af857c460d3fec04940a973646c4a01024f202
+```
