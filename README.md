@@ -32,7 +32,7 @@ GIT_PUSH_OPTION_COUNT=0
 GIT_QUARANTINE_PATH=/Users/moli/go-project/src/github.com/growerlab/mensa/test/repos/mo/te/moli/test/./objects/incoming-lRoOgD
 ```
 
-##### 参数
+### 参数
 
 标准输入 3 个参数
 
@@ -42,7 +42,7 @@ GIT_QUARANTINE_PATH=/Users/moli/go-project/src/github.com/growerlab/mensa/test/r
    - refs/heads/master
    - refs/tags/v1.0
 
-##### 环境变量
+#### 环境变量参数
 
 ```shell
 GROWERLAB_REPO_OWNER      // 仓库所有者
@@ -52,7 +52,7 @@ GROWERLAB_REPO_PROT_TYPE  // ssh/http
 GROWERLAB_REPO_OPERATOR   // 操作者
 ```
 
-##### 参数
+#### 参数描述
 
 update hook 会接受 3 个参数
 
@@ -62,7 +62,7 @@ update hook 会接受 3 个参数
    - refs/heads/master
    - refs/tags/v1.0
 
-###### 普通 commit
+##### 普通 commit
 
 第一次commit提交
 ```
@@ -78,7 +78,7 @@ new commit: b26e38a1f1439628d8d4f7ed06b2fc233239a0bb
 old commit: 7b10d02abbffea5de7bc00ac1f9d6d602e5dfe18
 ```
 
-###### 新增分支
+##### 新增分支
 
 ```
 ref: refs/heads/master2
@@ -86,7 +86,7 @@ new commit: b26e38a1f1439628d8d4f7ed06b2fc233239a0bb
 old commit: 0000000000000000000000000000000000000000
 ```
 
-###### 删除分支
+##### 删除分支
 
 ```
 ref: refs/heads/master2
@@ -94,7 +94,7 @@ new commit: 0000000000000000000000000000000000000000
 old commit: b26e38a1f1439628d8d4f7ed06b2fc233239a0bb
 ```
 
-###### 新增 tag
+##### 新增 tag
 
 ```
 ref: refs/tags/v1.0
@@ -102,7 +102,7 @@ new commit: 8aa1cfdb6e50c43c54576f36e6bbccfb6ed9644d
 old commit: 0000000000000000000000000000000000000000
 ```
 
-###### 删除 tag
+##### 删除 tag
 
 ```
 ref: refs/tags/v1.0
