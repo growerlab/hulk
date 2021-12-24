@@ -9,8 +9,7 @@ import (
 )
 
 const (
-	ZeroRef                = "0000000000000000000000000000000000000000"
-	defaultMaxLimitCommits = 20
+	ZeroRef = "0000000000000000000000000000000000000000"
 )
 
 type Repository struct {

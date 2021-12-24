@@ -10,7 +10,7 @@ import (
 var _ Hook = (*HookEvent)(nil)
 
 const (
-	MaxCommitLimit = 20
+	MaxCommitLimit = 21
 )
 
 type PushEvent struct {
@@ -25,7 +25,7 @@ type HookEvent struct {
 }
 
 func (h *HookEvent) Label() string {
-	return "event"
+	return "hook_event"
 }
 
 func (h *HookEvent) Priority() uint {
@@ -37,15 +37,17 @@ func (h *HookEvent) Process(dispatcher EventDispatcher, sess *PushSession) error
 	var event *PushEvent
 	var err error
 
-	if sess.IsNewTag() {
+	switch true {
+	case sess.IsNewTag():
 		event, err = h.buildNewTagEvent(repository, sess)
-	} else if sess.IsNewBranch() {
+	case sess.IsNewBranch():
 		event, err = h.buildNewBranchEvent(repository, sess)
-	} else if sess.IsCommitPush() {
+	case sess.IsCommitPush():
 		event, err = h.buildCommitEvent(repository, sess)
-	} else {
+	default:
 		return errors.Errorf("invalid session: '%s'", sess.JSON())
 	}
+
 	if err != nil {
 		return errors.WithStack(err)
 	}

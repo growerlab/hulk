@@ -66,11 +66,11 @@ func (r *PushSession) IsNullNewCommit() bool {
 }
 
 func (r *PushSession) IsNewBranch() bool {
-	return repo.IsBranch(r.RefName) && r.IsNullOldCommit() && !r.IsNullNewCommit()
+	return r.RefType == RefTypeBranch && r.Action == ActionCreate
 }
 
 func (r *PushSession) IsNewTag() bool {
-	return repo.IsTag(r.RefName) && r.IsNullOldCommit() && !r.IsNullNewCommit()
+	return r.RefType == RefTypeTag && r.Action == ActionCreate
 }
 
 func (r *PushSession) IsDeleteAction() bool {
