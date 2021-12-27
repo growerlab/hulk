@@ -60,7 +60,7 @@ func BuildPlainCommits(commits ...*object.Commit) PlainCommits {
 				Email: cmt.Committer.Email,
 				When:  cmt.Committer.When.Unix(),
 			},
-			Message: string(msg[:256]),
+			Message: string(msg),
 		})
 	}
 	return result
