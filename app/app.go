@@ -21,6 +21,7 @@ type App struct {
 
 func (a *App) RegisterHook(hooks ...Hook) {
 	a.hooks = append(a.hooks, hooks...)
+	a.sortHooks()
 }
 
 func (a *App) sortHooks() {
@@ -30,8 +31,6 @@ func (a *App) sortHooks() {
 }
 
 func (a *App) Run(sess *PushSession) error {
-	a.sortHooks()
-
 	for _, hook := range a.hooks {
 		if err := hook.Process(a.dispatcher, sess); err != nil {
 			return err
