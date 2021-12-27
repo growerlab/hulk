@@ -15,9 +15,9 @@ const (
 
 type PushEvent struct {
 	*PushSession
-	CommitCount int    `json:"commit_count"`
-	RefCount    int    `json:"ref_count"`
-	Message     string `json:"commit_message"` // commit/tag message
+	CommitCount int                 `json:"commit_count"`
+	Commits     []*repo.PlainCommit `json:"commits"`        // commits
+	Message     string              `json:"commit_message"` // commit/tag message
 }
 
 // 创建推送事件
@@ -59,17 +59,17 @@ func (h *HookEvent) buildCommitEvent(repository *repo.Repository, sess *PushSess
 	if err != nil {
 		return nil, err
 	}
+	if len(commits) == 0 {
+		return nil, nil
+	}
 
 	plainCommits := repo.BuildPlainCommits(commits...)
-	message, err := plainCommits.ToString()
-	if err != nil {
-		return nil, err
-	}
+	message := commits[0].Message
 
 	return &PushEvent{
 		PushSession: sess,
 		CommitCount: len(commits),
-		RefCount:    1,
+		Commits:     plainCommits,
 		Message:     message,
 	}, nil
 }
@@ -86,15 +86,15 @@ func (h *HookEvent) buildNewBranchEvent(repository *repo.Repository, sess *PushS
 	}
 
 	plainCommits := repo.BuildPlainCommits(commits...)
-	message, err := plainCommits.ToString()
-	if err != nil {
-		return nil, err
+	message := ""
+	if len(commits) > 0 {
+		message = commits[0].Message
 	}
 
 	return &PushEvent{
 		PushSession: sess,
 		CommitCount: len(commits),
-		RefCount:    1,
+		Commits:     plainCommits,
 		Message:     message,
 	}, nil
 }
@@ -109,11 +109,12 @@ func (h *HookEvent) buildNewTagEvent(repository *repo.Repository, sess *PushSess
 	if err != nil {
 		return nil, err
 	}
+	plainCommits := repo.BuildPlainCommits(commits...)
 
 	return &PushEvent{
 		PushSession: sess,
 		CommitCount: len(commits),
-		RefCount:    1,
+		Commits:     plainCommits,
 		Message:     tag.Message,
 	}, nil
 }
