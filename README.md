@@ -4,7 +4,7 @@
 
 推送时的运行钩子
 
-通过执行 git -c core.hookPaths 注入钩子
+通过执行 git -c core.hooksPath 注入钩子
 
 运行时，该程序应放在根目录的 hooks 目录下
 
