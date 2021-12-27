@@ -6,19 +6,22 @@ import (
 	"time"
 
 	"github.com/go-redis/redis/v7"
+	"github.com/growerlab/backend/app/model/db"
 )
-
-var RedisClient *redis.Client
 
 func InitRedis() error {
 	addr := net.JoinHostPort(Conf.Redis.Host, strconv.Itoa(Conf.Redis.Port))
 	idleTimeout := time.Duration(Conf.Redis.IdleTimeout) * time.Second
-	RedisClient = redis.NewClient(&redis.Options{
-		Addr:         addr,
-		DB:           0,
-		PoolSize:     Conf.Redis.MaxActive,
-		MinIdleConns: Conf.Redis.MaxIdle,
-		IdleTimeout:  idleTimeout,
-	})
+
+	db.MemDB = &db.MemDBClient{
+		Cmdable: redis.NewClient(&redis.Options{
+			Addr:         addr,
+			DB:           0,
+			PoolSize:     Conf.Redis.MaxActive,
+			MinIdleConns: Conf.Redis.MaxIdle,
+			IdleTimeout:  idleTimeout,
+		}),
+		KeyBuilder: db.NewKeyBuilder(Conf.Redis.Namespace),
+	}
 	return nil
 }

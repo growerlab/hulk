@@ -17,6 +17,10 @@ C --> F[分支权限验证]
 C --> Z[更新pr?]
 ```
 
+#### TODO
+
+- [ ] 支持自检（确认相关的配置是正确的） 
+
 #### 钩子环境
 
 钩子执行时传入的参数、环境变量
@@ -45,6 +49,7 @@ GIT_QUARANTINE_PATH=/Users/moli/go-project/src/github.com/growerlab/mensa/test/r
 #### 环境变量参数
 
 ```shell
+ENV                       // 运行环境(dev,local,production)
 GROWERLAB_REPO_OWNER      // 仓库所有者
 GROWERLAB_REPO_NAME       // 仓库名称
 GROWERLAB_REPO_ACTION     // pull/push

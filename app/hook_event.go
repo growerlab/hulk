@@ -14,7 +14,7 @@ const (
 )
 
 type PushEvent struct {
-	*PushSession
+	Session     *PushSession        `json:"session"`
 	CommitCount int                 `json:"commit_count"`
 	Commits     []*repo.PlainCommit `json:"commits"`        // commits
 	Message     string              `json:"commit_message"` // commit/tag message
@@ -67,7 +67,7 @@ func (h *HookEvent) buildCommitEvent(repository *repo.Repository, sess *PushSess
 	message := commits[0].Message
 
 	return &PushEvent{
-		PushSession: sess,
+		Session:     sess,
 		CommitCount: len(commits),
 		Commits:     plainCommits,
 		Message:     message,
@@ -92,7 +92,7 @@ func (h *HookEvent) buildNewBranchEvent(repository *repo.Repository, sess *PushS
 	}
 
 	return &PushEvent{
-		PushSession: sess,
+		Session:     sess,
 		CommitCount: len(commits),
 		Commits:     plainCommits,
 		Message:     message,
@@ -112,7 +112,7 @@ func (h *HookEvent) buildNewTagEvent(repository *repo.Repository, sess *PushSess
 	plainCommits := repo.BuildPlainCommits(commits...)
 
 	return &PushEvent{
-		PushSession: sess,
+		Session:     sess,
 		CommitCount: len(commits),
 		Commits:     plainCommits,
 		Message:     tag.Message,

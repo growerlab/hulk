@@ -1,5 +1,9 @@
 package app
 
+import (
+	"github.com/growerlab/backend/app/common/events"
+)
+
 // EventDispatcher backend响应这个事件
 type EventDispatcher interface {
 	// Dispatch 将event推送给redis的stream
@@ -11,6 +15,7 @@ var _ EventDispatcher = (*EventDispatch)(nil)
 type EventDispatch struct {
 }
 
+// Dispatch 将event推送给redis的stream
 func (e *EventDispatch) Dispatch(event *PushEvent) error {
-	panic("implement me")
+	return events.NewGitEvent().AsyncPushGitEvent(event)
 }
