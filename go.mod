@@ -6,7 +6,7 @@ require (
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d
 	github.com/go-git/go-git/v5 v5.4.2
 	github.com/go-redis/redis/v7 v7.4.0
-	github.com/growerlab/backend v0.0.0-20211227164300-6938a202b670
+	github.com/growerlab/backend v0.0.0-20211228043109-397bce8fc8db
 	github.com/pkg/errors v0.9.1
 	gopkg.in/yaml.v2 v2.3.0
 )
